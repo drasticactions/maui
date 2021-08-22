@@ -20,6 +20,8 @@ namespace Microsoft.Maui
 			Id = global::Android.Views.View.GenerateViewId();
 		}
 
+		internal bool? IsPopping { get; private set; }
+
 		// all of this weirdness is because AFAICT you can't remove things from the navigation stack
 		public void ReShuffleDestinations(
 			IReadOnlyList<IView> pages,
@@ -27,6 +29,12 @@ namespace Microsoft.Maui
 			NavigationLayout navigationLayout)
 		{
 			var navController = navigationLayout.NavHost.NavController;
+
+			// TODO this needs a bit more behavior because what about swapping out stuff
+			if (pages[pages.Count - 1] == NavigationStack[NavigationStack.Count - 1])
+				IsPopping = null;
+			else
+				IsPopping = pages.Count < NavigationStack.Count;
 
 			// this means the currently visible page hasn't changed so don't do anything
 			// TODO MAUI test remove page on root
@@ -39,9 +47,6 @@ namespace Microsoft.Maui
 				NavigationStack = new List<IView>(pages);
 				return;
 			}
-
-			NavOptions? navOptions = null;
-			
 
 			var iterator = navigationLayout.NavHost.NavController.BackStack.Iterator();
 			var fragmentNavDestinations = new List<FragmentNavDestination>();
@@ -62,33 +67,8 @@ namespace Microsoft.Maui
 			Console.WriteLine($"Output Stack end");
 
 			Pages.Clear();
-			bool isPop = pages.Count < NavigationStack.Count;
-
 			if (fragmentNavDestinations.Count < pages.Count)
 			{
-				if (animated)
-				{
-					// natively we're doing the opposite
-					if (isPop)
-					{
-						navOptions = new NavOptions.Builder()
-							 .SetPopEnterAnim(Resource.Animation.enterfromright)
-							 .SetPopExitAnim(Resource.Animation.exittoleft)
-							 .SetEnterAnim(Resource.Animation.enterfromleft)
-							 .SetExitAnim(Resource.Animation.exittoright)
-							 .Build();
-					}
-					else
-					{
-						navOptions = new NavOptions.Builder()
-								.SetEnterAnim(Resource.Animation.enterfromright)
-								.SetExitAnim(Resource.Animation.exittoleft)
-								.SetPopEnterAnim(Resource.Animation.enterfromleft)
-								.SetPopExitAnim(Resource.Animation.exittoright)
-								.Build();
-					}
-				}
-
 				for (int i = 0; i < pages.Count; i++)
 				{
 					// TODO cleanup into method
@@ -99,16 +79,10 @@ namespace Microsoft.Maui
 					}
 					else
 					{
+						// AddDestination adds Pages Ids
 						var dest = AddDestination(pages[i], navigationLayout);
-
-						if (i < (pages.Count - 1))
-						{
-							navController.Navigate(dest.Id);
-						}
-						else
-						{
-							navController.Navigate(dest.Id, null, navOptions);
-						}
+						// TODO VALIDATE plopping lots of pages here
+						navController.Navigate(dest.Id);
 					}
 				}
 			}
@@ -118,70 +92,12 @@ namespace Microsoft.Maui
 				// TODO MAUI work with cleaning up fragments before actually firing navigation
 				Pages.Add(pages[0], fragmentNavDestinations[0].Id);
 				fragmentNavDestinations[0].Page = pages[0];
-
-				//navOptions = new NavOptions.Builder()
-				//				.SetEnterAnim(Resource.Animation.enterfromright)
-				//				.SetExitAnim(Resource.Animation.exittoleft)
-				//				.SetPopEnterAnim(Resource.Animation.enterfromleft)
-				//				.SetPopExitAnim(Resource.Animation.exittoright)
-				//				.SetPopUpTo(fragmentNavDestinations[0].Id, false)
-				//				.Build();
-
 				navController.PopBackStack(fragmentNavDestinations[0].Id, false);
-				// navController.Navigate(fragmentNavDestinations[0].Id, null, navOptions);
-			}
-			else if (pages[pages.Count - 1] == NavigationStack[NavigationStack.Count - 1])
-			{
-				int popToId = 0;
-				for (int i = 0; i < pages.Count - 1; i++)
-				{
-					Pages.Add(pages[i], fragmentNavDestinations[i].Id);
-
-					if (fragmentNavDestinations[i].Page != pages[i])
-						fragmentNavDestinations[i].Page = pages[i];
-
-					popToId = fragmentNavDestinations[i].Id;
-				}
-
-				// last page on the stack
-				var lastPage = pages.Last();
-
-				// last fragment on the stack
-				var lastFrag = fragmentNavDestinations.Last();
-
-
-				Pages.Add(lastPage, lastFrag.Id);
-
-				if (lastFrag.Page != lastPage)
-					lastFrag.Page = lastPage;
-
-				Console.Write($"lastFrag ID: {lastFrag.Id}");
-
-				bool inclusive = false;
-				if (popToId == 0)
-				{
-					popToId = fragmentNavDestinations[0].Id;
-					Console.Write($"PopToID: {popToId}");
-					navOptions = new NavOptions.Builder()
-							.SetPopUpTo(popToId, true)
-							.Build();
-
-					this.StartDestination = lastFrag.Id;
-					var actionId = Android.Views.View.GenerateViewId();
-					lastFrag.PutAction(actionId, new NavAction(lastFrag.Id, navOptions));
-					Console.WriteLine($"Inclusive Push to {(lastFrag.Page as ITitledElement)?.Title}");
-					navController.Navigate(actionId);
-				}
-				else
-				{
-					Console.Write($"PopToID: {popToId}");
-					Console.WriteLine($"{navController.PopBackStack(popToId, inclusive)}");
-					navController.Navigate(lastFrag.Id);
-				}
 			}
 			else if (pages.Count == fragmentNavDestinations.Count)
 			{
-				int popToId = fragmentNavDestinations[fragmentNavDestinations.Count - 2].Id;
+				int lastFragId = fragmentNavDestinations[pages.Count - 1].Id;
+
 				for (int i = 0; i < pages.Count; i++)
 				{
 					Pages.Add(pages[i], fragmentNavDestinations[i].Id);
@@ -190,49 +106,37 @@ namespace Microsoft.Maui
 						fragmentNavDestinations[i].Page = pages[i];
 				}
 
-				// last page on the stack
-				var lastPage = pages.Last();
+				navController.PopBackStack();
+				navController.Navigate(lastFragId);
+			}
+			else if (pages[pages.Count - 1] == NavigationStack[NavigationStack.Count - 1])
+			{
+				int popToId = fragmentNavDestinations[pages.Count - 2].Id;
+				int lastFragId = fragmentNavDestinations[pages.Count - 1].Id;
 
-				// last fragment on the stack
-				var lastFrag = fragmentNavDestinations.Last();
+				for (int i = 0; i < pages.Count; i++)
+				{
+					Pages.Add(pages[i], fragmentNavDestinations[i].Id);
 
-				if (lastFrag.Page != lastPage)
-					lastFrag.Page = lastPage;
+					if (fragmentNavDestinations[i].Page != pages[i])
+						fragmentNavDestinations[i].Page = pages[i];
+				}
 
-				Console.Write($"lastFrag ID: {lastFrag.Id}");
-				Console.Write($"PopToID: {popToId}");
-				Console.WriteLine($"{navController.PopBackStack(popToId, false)}");
-				navController.Navigate(lastFrag.Id);
+				navController.PopBackStack(popToId, false);
+				navController.Navigate(lastFragId);
 			}
 			else
 			{
-				int popToId = 0;
+				int popToId = fragmentNavDestinations[pages.Count - 1].Id;
 				for (int i = 0; i < pages.Count; i++)
 				{
 					Pages.Add(pages[i], fragmentNavDestinations[i].Id);
 
 					if (fragmentNavDestinations[i].Page != pages[i])
 						fragmentNavDestinations[i].Page = pages[i];
-
-					popToId = fragmentNavDestinations[i].Id;
 				}
 
-				// last page on the stack
-				var lastPage = pages.Last();
-
-				// last fragment on the stack
-				var lastFrag = fragmentNavDestinations.Last();
-				navOptions = new NavOptions.Builder()
-								.SetEnterAnim(Resource.Animation.enterfromright)
-								.SetExitAnim(Resource.Animation.exittoleft)
-								.SetPopEnterAnim(Resource.Animation.enterfromleft)
-								.SetPopExitAnim(Resource.Animation.exittoright)
-								.SetPopUpTo(popToId, false)
-								.Build();
-
-				Console.Write($"PopToID: {popToId}");
-				//Console.WriteLine($"{navController.PopBackStack(popToId, false)}");
-				navController.Navigate(popToId, null, navOptions);
+				navController.PopBackStack(popToId, false);
 			}
 
 

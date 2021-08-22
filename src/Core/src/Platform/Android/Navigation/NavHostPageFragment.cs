@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Android.Content;
 using Android.Content.Res;
 using Android.Graphics;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
+using Android.Views.Animations;
 using AndroidX.AppCompat.App;
 using AndroidX.AppCompat.Widget;
 using AndroidX.CoordinatorLayout.Widget;
@@ -30,6 +32,10 @@ namespace Microsoft.Maui
 				   (Context?.GetFragmentManager()?.FindFragmentById(Resource.Id.nav_host)
 			  as NavHostFragment) ?? throw new InvalidOperationException($"NavHost cannot be null here");
 
+		NavGraphDestination Graph =>
+				   (NavHost.NavController.Graph as NavGraphDestination) 
+			?? throw new InvalidOperationException($"Graph cannot be null here");
+
 		public FragmentNavDestination NavDestination
 		{
 			get => _navDestination ?? throw new InvalidOperationException($"NavDestination cannot be null here");
@@ -44,6 +50,44 @@ namespace Microsoft.Maui
 		public NavHostPageFragment()
 		{
 			BackClick = new ProcessBackClick(this);
+		}
+
+		public override Animation OnCreateAnimation(int transit, bool enter, int nextAnim)
+		{
+			int id = 0;
+
+			// TODO MAUI write comments about WHY
+			if (Graph.IsPopping == null)
+				return base.OnCreateAnimation(transit, enter, nextAnim);
+
+			if (Graph.IsPopping.Value)
+			{
+				if (!enter)
+				{
+					id = Resource.Animation.exittoright;
+				}
+				else
+				{
+					id = Resource.Animation.enterfromleft;
+				}
+			}
+			else
+			{
+				if (enter)
+				{
+					id = Resource.Animation.enterfromright;
+				}
+				else
+				{
+					id = Resource.Animation.exittoleft;
+				}
+			}
+
+			var thing = AnimationUtils.LoadAnimation(Context, id);
+			var animation =
+				thing ?? base.OnCreateAnimation(transit, enter, id);
+			
+			return animation;
 		}
 
 		public override AView OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -62,7 +106,6 @@ namespace Microsoft.Maui
 			NavDestination.Page.Handler?.DisconnectHandler();
 			NavDestination.Page.Handler = null;
 			var view = NavDestination.Page.ToNative(NavDestination.MauiContext);
-			//view.RemoveFromParent();
 			return view;
 		}
 
