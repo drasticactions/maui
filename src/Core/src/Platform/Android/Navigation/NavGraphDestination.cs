@@ -21,6 +21,7 @@ namespace Microsoft.Maui
 		}
 
 		internal bool? IsPopping { get; private set; }
+		internal bool IsAnimated { get; private set; } = true;
 
 		// all of this weirdness is because AFAICT you can't remove things from the navigation stack
 		public void ReShuffleDestinations(
@@ -35,6 +36,8 @@ namespace Microsoft.Maui
 				IsPopping = null;
 			else
 				IsPopping = pages.Count < NavigationStack.Count;
+
+			IsAnimated = animated;
 
 			// this means the currently visible page hasn't changed so don't do anything
 			// TODO MAUI test remove page on root
@@ -52,19 +55,15 @@ namespace Microsoft.Maui
 			var fragmentNavDestinations = new List<FragmentNavDestination>();
 			var bsEntry = new List<NavBackStackEntry>();
 
-			Console.WriteLine($"Output Stack start");
 			while (iterator.HasNext)
 			{
 				if (iterator.Next() is NavBackStackEntry nbse &&
 					nbse.Destination is FragmentNavDestination nvd)
 				{
-					Console.WriteLine($"In Stack {(nvd.Page as ITitledElement)?.Title}");
 					fragmentNavDestinations.Add(nvd);
 					bsEntry.Add(nbse);
 				}
 			}
-
-			Console.WriteLine($"Output Stack end");
 
 			Pages.Clear();
 			if (fragmentNavDestinations.Count < pages.Count)
@@ -86,14 +85,6 @@ namespace Microsoft.Maui
 					}
 				}
 			}
-			// user is popping to root
-			else if (pages.Count == 1)
-			{
-				// TODO MAUI work with cleaning up fragments before actually firing navigation
-				Pages.Add(pages[0], fragmentNavDestinations[0].Id);
-				fragmentNavDestinations[0].Page = pages[0];
-				navController.PopBackStack(fragmentNavDestinations[0].Id, false);
-			}
 			else if (pages.Count == fragmentNavDestinations.Count)
 			{
 				int lastFragId = fragmentNavDestinations[pages.Count - 1].Id;
@@ -109,21 +100,13 @@ namespace Microsoft.Maui
 				navController.PopBackStack();
 				navController.Navigate(lastFragId);
 			}
-			else if (pages[pages.Count - 1] == NavigationStack[NavigationStack.Count - 1])
+			// user is popping to root
+			else if (pages.Count == 1)
 			{
-				int popToId = fragmentNavDestinations[pages.Count - 2].Id;
-				int lastFragId = fragmentNavDestinations[pages.Count - 1].Id;
-
-				for (int i = 0; i < pages.Count; i++)
-				{
-					Pages.Add(pages[i], fragmentNavDestinations[i].Id);
-
-					if (fragmentNavDestinations[i].Page != pages[i])
-						fragmentNavDestinations[i].Page = pages[i];
-				}
-
-				navController.PopBackStack(popToId, false);
-				navController.Navigate(lastFragId);
+				// TODO MAUI work with cleaning up fragments before actually firing navigation
+				Pages.Add(pages[0], fragmentNavDestinations[0].Id);
+				fragmentNavDestinations[0].Page = pages[0];
+				navController.PopBackStack(fragmentNavDestinations[0].Id, false);
 			}
 			else
 			{
@@ -145,7 +128,6 @@ namespace Microsoft.Maui
 				if (!Pages.Values.ToList().Contains(thing.Id))
 				{
 					this.Remove(thing);
-					Console.WriteLine($"Removing Destination {(thing.Page as ITitledElement)?.Title}");
 				}
 			}
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Graphics;
 
@@ -43,6 +44,13 @@ namespace Maui.Controls.Sample.Pages
 		{
 			if (Navigation.NavigationStack.Count >= 2)
 				Navigation.RemovePage(Navigation.NavigationStack[Navigation.NavigationStack.Count - 2]);
+		}
+
+		void SwapRoot(object sender, EventArgs e)
+		{
+			(Parent as INavigationView)
+				.RequestNavigation(new MauiNavigationRequestedEventArgs(
+					new List<NavigationGallery> { new NavigationGallery() }, false));
 		}
 	}
 }

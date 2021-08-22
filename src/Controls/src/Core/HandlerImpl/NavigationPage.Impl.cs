@@ -91,12 +91,39 @@ namespace Microsoft.Maui.Controls
 
 		void INavigationView.NavigationFinished(IReadOnlyList<IView> newStack)
 		{
-			// TODO MAUI Create sync version of this since there's no animation
-			RemoveAsyncInner(CurrentPage, false, true, true)
-					.FireAndForget((e) =>
+			for (int i = 0; i < newStack.Count; i++)
+			{
+				var element = (Element)newStack[i];
+
+				if (InternalChildren.Count < i)
+					InternalChildren.Add(element);
+				else if (InternalChildren[i] != element)
 				{
-					//Log.Warning(nameof(NavigationViewHandler), $"{e}");
-				});
+					int index = InternalChildren.IndexOf(element);
+					if (index >= 0)
+					{
+						// TODO MAUI Do we support move?
+						InternalChildren.Move(index, i);
+					}
+					else
+					{
+						InternalChildren.Insert(i, element);
+					}
+				}
+			}
+
+			while (InternalChildren.Count > newStack.Count)
+			{
+				InternalChildren.RemoveAt(InternalChildren.Count - 1);
+			}
+
+			CurrentPage = (Page)newStack[newStack.Count - 1];
+			// TODO MAUI Create sync version of this since there's no animation
+			//RemoveAsyncInner(CurrentPage, false, true, true)
+			//		.FireAndForget((e) =>
+			//	{
+			//		//Log.Warning(nameof(NavigationViewHandler), $"{e}");
+			//	});
 
 			// TODO MAUI calculate this out better
 			//PopAsync()

@@ -57,7 +57,7 @@ namespace Microsoft.Maui
 			int id = 0;
 
 			// TODO MAUI write comments about WHY
-			if (Graph.IsPopping == null)
+			if (Graph.IsPopping == null || !Graph.IsAnimated)
 				return base.OnCreateAnimation(transit, enter, nextAnim);
 
 			if (Graph.IsPopping.Value)

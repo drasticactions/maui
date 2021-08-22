@@ -63,8 +63,6 @@ namespace Microsoft.Maui
 			set => _fragmentNavigator = value;
 		}
 
-		
-		int NavigationStackCount => NavigationView?.NavigationStack.Count ?? 0;
 
 		internal Toolbar Toolbar
 		{
@@ -120,29 +118,25 @@ namespace Microsoft.Maui
 
 		internal virtual void OnPageFragmentDestroyed(AndroidX.Fragment.App.FragmentManager fm, NavHostPageFragment navHostPageFragment)
 		{
+			_ = NavigationView ?? throw new InvalidOperationException($"NavigationView cannot be null");
+
+			var graph = (NavGraphDestination)NavHost.NavController.Graph;
+			NavigationView.NavigationFinished(graph.NavigationStack);
 		}
 
 		internal virtual void OnFragmentResumed(AndroidX.Fragment.App.FragmentManager fm, NavHostPageFragment navHostPageFragment)
 		{
+			// TODO MAUI Finish wiring up NavigationFinished
+			//_ = NavigationView ?? throw new InvalidOperationException($"NavigationView cannot be null");
+
+			//var graph = (NavGraphDestination)NavHost.NavController.Graph;
+			//NavigationView.NavigationFinished(graph.NavigationStack);
 		}
 
 		public virtual void RequestNavigation(MauiNavigationRequestedEventArgs e)
 		{
 			var graph = (NavGraphDestination)NavHost.NavController.Graph;
 			graph.ReShuffleDestinations(e.NavigationStack, e.Animated, this);
-
-
-			//if (e.NavigationStack.Count > _navigationStack.Count)
-			//{
-			//	var destination =
-			//		FragmentNavDestination.AddDestination(e.NavigationStack.Last(), this, graph, FragmentNavigator);
-
-			//	NavHost.NavController.Navigate(destination.Id, null, navOptions);
-			//}
-			//else
-			//{
-			//	NavHost.NavController.NavigateUp();
-			//}
 		}
 
 		public virtual void Pop(object? arg3)
@@ -153,13 +147,13 @@ namespace Microsoft.Maui
 
 		internal void OnPop()
 		{
-			_ = NavigationView ?? throw new InvalidOperationException($"VirtualView cannot be null");
+			_ = NavigationView ?? throw new InvalidOperationException($"NavigationView cannot be null");
 
 			var graph = (NavGraphDestination)NavHost.NavController.Graph;
 			var stack = new List<IView>(graph.NavigationStack);
 			stack.RemoveAt(stack.Count - 1);
 			graph.ReShuffleDestinations(stack, true, this);
-			NavigationView.NavigationFinished(graph.NavigationStack);
+
 
 			//NavigationView
 			//	.PopAsync()
