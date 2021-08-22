@@ -48,9 +48,12 @@ namespace Maui.Controls.Sample.Pages
 
 		void SwapRoot(object sender, EventArgs e)
 		{
-			(Parent as INavigationView)
-				.RequestNavigation(new MauiNavigationRequestedEventArgs(
-					new List<NavigationGallery> { new NavigationGallery() }, false));
+			(Parent as INavigationView).RequestNavigation(
+				new MauiNavigationRequestedEventArgs(
+					new List<NavigationGallery>
+					{
+						new NavigationGallery()
+					}, false));
 		}
 	}
 }

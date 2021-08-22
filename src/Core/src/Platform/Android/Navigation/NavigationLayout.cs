@@ -116,7 +116,7 @@ namespace Microsoft.Maui
 			NavHost.ChildFragmentManager.RegisterFragmentLifecycleCallbacks(new FragmentLifecycleCallback(this), false);
 		}
 
-		internal virtual void OnPageFragmentDestroyed(AndroidX.Fragment.App.FragmentManager fm, NavHostPageFragment navHostPageFragment)
+		protected private virtual void OnPageFragmentDestroyed(AndroidX.Fragment.App.FragmentManager fm, NavHostPageFragment navHostPageFragment)
 		{
 			_ = NavigationView ?? throw new InvalidOperationException($"NavigationView cannot be null");
 
@@ -124,7 +124,17 @@ namespace Microsoft.Maui
 			NavigationView.NavigationFinished(graph.NavigationStack);
 		}
 
-		internal virtual void OnFragmentResumed(AndroidX.Fragment.App.FragmentManager fm, NavHostPageFragment navHostPageFragment)
+		internal void ToolbarReady()
+		{
+			UpdateToolbar();
+		}
+
+		protected private virtual void UpdateToolbar()
+		{
+
+		}
+
+		protected private virtual void OnFragmentResumed(AndroidX.Fragment.App.FragmentManager fm, NavHostPageFragment navHostPageFragment)
 		{
 			// TODO MAUI Finish wiring up NavigationFinished
 			//_ = NavigationView ?? throw new InvalidOperationException($"NavigationView cannot be null");

@@ -243,13 +243,13 @@ namespace Microsoft.Maui.Controls.Platform
 		//	}
 		//}
 
-		protected virtual void SetupPageTransition(FragmentTransaction transaction, bool isPush)
-		{
-			if (isPush)
-				transaction.SetTransitionEx((int)FragmentTransit.FragmentOpen);
-			else
-				transaction.SetTransitionEx((int)FragmentTransit.FragmentClose);
-		}
+		//protected virtual void SetupPageTransition(FragmentTransaction transaction, bool isPush)
+		//{
+		//	if (isPush)
+		//		transaction.SetTransitionEx((int)FragmentTransit.FragmentOpen);
+		//	else
+		//		transaction.SetTransitionEx((int)FragmentTransit.FragmentClose);
+		//}
 
 		internal int GetNavBarHeight()
 		{
@@ -369,10 +369,17 @@ namespace Microsoft.Maui.Controls.Platform
 		//	_taskCompletionSource = null;
 		//}
 
-		internal override void OnFragmentResumed(FragmentManager fm, NavHostPageFragment navHostPageFragment)
+		private protected override void OnPageFragmentDestroyed(FragmentManager fm, NavHostPageFragment navHostPageFragment)
+		{
+			base.OnPageFragmentDestroyed(fm, navHostPageFragment);
+			UpdateToolbar();
+		}
+
+		protected private override void OnFragmentResumed(FragmentManager fm, NavHostPageFragment navHostPageFragment)
 		{
 			base.OnFragmentResumed(fm, navHostPageFragment);
 			_toolbarTracker.Target = (Page)navHostPageFragment.NavDestination.Page;
+			UpdateToolbar();
 		}
 
 		void OnPushed(object sender, NavigationRequestedEventArgs e)
@@ -654,7 +661,7 @@ namespace Microsoft.Maui.Controls.Platform
 			ToolbarExtensions.UpdateMenuItemIcon(Element.FindMauiContext(), menuItem, toolBarItem, null);
 		}
 
-		void UpdateToolbar()
+		private protected override void UpdateToolbar()
 		{
 			Context context = Context;
 			AToolbar bar = _toolbar;
@@ -677,7 +684,6 @@ namespace Microsoft.Maui.Controls.Platform
 						toggle.SyncState();
 					}
 
-					
 					var icon = new DrawerArrowDrawable(context.GetThemedContext());
 					icon.Progress = 1;
 					bar.NavigationIcon = icon;

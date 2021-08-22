@@ -132,6 +132,7 @@ namespace Microsoft.Maui
 			}
 
 			NavigationStack = new List<IView>(pages);
+			navigationLayout.ToolbarReady();
 		}
 
 		public FragmentNavDestination AddDestination(

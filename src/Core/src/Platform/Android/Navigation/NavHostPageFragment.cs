@@ -106,6 +106,7 @@ namespace Microsoft.Maui
 			NavDestination.Page.Handler?.DisconnectHandler();
 			NavDestination.Page.Handler = null;
 			var view = NavDestination.Page.ToNative(NavDestination.MauiContext);
+
 			return view;
 		}
 
@@ -127,8 +128,6 @@ namespace Microsoft.Maui
 			HasOptionsMenu = true;
 
 			NavDestination.NavigationLayout.Toolbar.SetNavigationOnClickListener(BackClick);
-
-			UpdateToolbar();
 
 			var titledElement = NavDestination.Page as ITitledElement;
 
@@ -209,13 +208,6 @@ namespace Microsoft.Maui
 		{
 			NavDestination.NavigationLayout.OnPop();
 		}
-
-		// TODO Move somewhere else
-		void UpdateToolbar()
-		{
-
-		}
-
 
 		class ProcessBackClick : AndroidX.Activity.OnBackPressedCallback, AView.IOnClickListener
 		{
