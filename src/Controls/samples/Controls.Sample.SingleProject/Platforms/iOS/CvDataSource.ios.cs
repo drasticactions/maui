@@ -62,6 +62,7 @@ namespace Microsoft.Maui
 			};
 
 			var cell = collectionView.DequeueReusableCell(nativeReuseId, indexPath) as CvCell;
+			cell.Handler = Handler;
 			cell.IndexPath = indexPath;
 			cell.Init(Handler?.MauiContext);
 
@@ -75,6 +76,9 @@ namespace Microsoft.Maui
 				var view = Handler?.PositionalViewSelector?.ViewSelector?.CreateView(info.Kind, data, info.SectionIndex, info.ItemIndex);
 				cell.SwapView(view);
 			}
+
+			if (data is IPositionInfo dataPositionInfo)
+				dataPositionInfo.SetPositionInfo(info);
 
 			cell.Update(info);
 

@@ -103,5 +103,9 @@ namespace Microsoft.Maui
 				//
 			}
 		}
+
+		public static void MapOrientation(VirtualListViewHandler handler, IVirtualListView virtualListView, object? parameter)
+		{
+		}
 	}
 }
