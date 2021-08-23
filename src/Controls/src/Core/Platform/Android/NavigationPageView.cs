@@ -27,18 +27,13 @@ using Object = Java.Lang.Object;
 
 namespace Microsoft.Maui.Controls.Platform
 {
-	public class NavigationPageView : NavigationLayout, IManageFragments, IOnClickListener, ILifeCycleState
+	public class NavigationPageView : NavigationLayout, IManageFragments, IOnClickListener
 	{
-		//Drawable _backgroundDrawable;
-		Page _current;
-
-		//bool _disposed;
 		ActionBarDrawerToggle _drawerToggle;
 		FragmentManager _fragmentManager;
-		//int _lastActionBarHeight = -1;
 		int _statusbarHeight;
 		MaterialToolbar _toolbar;
-		private AppBarLayout _appBar;
+		AppBarLayout _appBar;
 		ToolbarTracker _toolbarTracker;
 		DrawerMultiplexedListener _drawerListener;
 		DrawerLayout _drawerLayout;
@@ -56,7 +51,6 @@ namespace Microsoft.Maui.Controls.Platform
 		// The following is based on https://android.googlesource.com/platform/frameworks/support.git/+/4a7e12af4ec095c3a53bb8481d8d92f63157c3b7/v4/java/android/support/v4/app/FragmentManager.java#677
 		// Must be overriden in a custom renderer to match durations in XML animation resource files
 		protected virtual int TransitionDuration { get; set; } = 220;
-		bool ILifeCycleState.MarkedForDispose { get; set; } = false;
 
 		NavigationPage Element { get; set; }
 
@@ -79,35 +73,9 @@ namespace Microsoft.Maui.Controls.Platform
 
 		INavigationPageController NavigationPageController => Element as INavigationPageController;
 
-		internal int ContainerTopPadding { get; set; }
-		internal int ContainerBottomPadding { get; set; }
-
-		Page Current
-		{
-			get { return _current; }
-			set
-			{
-				if (_current == value)
-					return;
-
-				if (_current != null)
-					_current.PropertyChanged -= CurrentOnPropertyChanged;
-
-				_current = value;
-
-				if (_current != null)
-				{
-					_current.PropertyChanged += CurrentOnPropertyChanged;
-					ToolbarVisible = NavigationPage.GetHasNavigationBar(_current);
-				}
-			}
-		}
-
-		FragmentManager FragmentManager => _fragmentManager ?? (_fragmentManager = Context.GetFragmentManager());
-
 		IPageController PageController => Element;
 
-		bool ToolbarVisible
+		internal bool ToolbarVisible
 		{
 			get { return _toolbarVisible; }
 			set
@@ -141,150 +109,6 @@ namespace Microsoft.Maui.Controls.Platform
 			_toolbarTracker.AdditionalTargets = Element.GetParentPages();
 		}
 
-		internal void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == NavigationPage.BarBackgroundColorProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == NavigationPage.BarBackgroundProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == NavigationPage.BarTextColorProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == BarHeightProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == AutomationProperties.NameProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == AutomationProperties.HelpTextProperty.PropertyName)
-				UpdateToolbar();
-		}
-
-
-		//protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
-		//{
-		//	var navView = GetChildAt(0);
-		//	navView.Measure(widthMeasureSpec, heightMeasureSpec);
-		//	SetMeasuredDimension(navView.MeasuredWidth, navView.MeasuredHeight);
-		//}
-
-
-		// TODO MAUI
-		//protected override void OnLayout(bool changed, int l, int t, int r, int b)
-		//{
-		//	AToolbar bar = _toolbar;
-		//	// make sure bar stays on top of everything
-		//	bar.BringToFront();
-
-		//	int barHeight = ActionBarHeight();
-
-		//	if (Element.IsSet(BarHeightProperty))
-		//		barHeight = Element.OnThisPlatform().GetBarHeight();
-
-		//	if (barHeight != _lastActionBarHeight && _lastActionBarHeight > 0)
-		//	{
-		//		ResetToolbar();
-		//		bar = _toolbar;
-		//	}
-		//	_lastActionBarHeight = barHeight;
-
-		//	bar.Measure(MeasureSpecMode.Exactly.MakeMeasureSpec(r - l), MeasureSpecMode.Exactly.MakeMeasureSpec(barHeight));
-
-		//	var barOffset = ToolbarVisible ? barHeight : 0;
-		//	int containerHeight = b - t - ContainerTopPadding - barOffset - ContainerBottomPadding;
-
-		//	PageController.ContainerArea = new Rectangle(0, 0, Context.FromPixels(r - l), Context.FromPixels(containerHeight));
-
-		//	// Potential for optimization here, the exact conditions by which you don't need to do this are complex
-		//	// and the cost of doing when it's not needed is moderate to low since the layout will short circuit pretty fast
-		//	Element.ForceLayout();
-
-		//	//var navView = GetChildAt(0);
-		//	//navView.Layout(l, t, r, b);
-		//	base.OnLayout(changed, l, t, r, b);
-
-		//	bool toolbarLayoutCompleted = false;
-		//	for (var i = 0; i < ChildCount; i++)
-		//	{
-		//		AView child = GetChildAt(i);
-
-		//		Page childPage = (child as PageContainer)?.Child?.VirtualView as Page;
-
-		//		if (childPage == null)
-		//			return;
-
-		//		// We need to base the layout of both the child and the bar on the presence of the NavBar on the child Page itself.
-		//		// If we layout the bar based on ToolbarVisible, we get a white bar flashing at the top of the screen.
-		//		// If we layout the child based on ToolbarVisible, we get a white bar flashing at the bottom of the screen.
-		//		bool childHasNavBar = NavigationPage.GetHasNavigationBar(childPage);
-
-		//		if (childHasNavBar)
-		//		{
-		//			bar.Layout(0, 0, r - l, barHeight);
-		//			child.Layout(0, barHeight + ContainerTopPadding, r, b - ContainerBottomPadding);
-		//		}
-		//		else
-		//		{
-		//			bar.Layout(0, -1000, r, barHeight - 1000);
-		//			child.Layout(0, ContainerTopPadding, r, b - ContainerBottomPadding);
-		//		}
-		//		toolbarLayoutCompleted = true;
-		//	}
-
-		//	// Making the layout of the toolbar dependant on having a child Page could potentially mean that the toolbar is not laid out.
-		//	// We'll do one more check to make sure it isn't missed.
-		//	if (!toolbarLayoutCompleted)
-		//	{
-		//		if (ToolbarVisible)
-		//		{
-		//			bar.Layout(0, 0, r - l, barHeight);
-		//		}
-		//		else
-		//		{
-		//			bar.Layout(0, -1000, r, barHeight - 1000);
-		//		}
-		//	}
-		//}
-
-		//protected virtual void SetupPageTransition(FragmentTransaction transaction, bool isPush)
-		//{
-		//	if (isPush)
-		//		transaction.SetTransitionEx((int)FragmentTransit.FragmentOpen);
-		//	else
-		//		transaction.SetTransitionEx((int)FragmentTransit.FragmentClose);
-		//}
-
-		internal int GetNavBarHeight()
-		{
-			if (!ToolbarVisible)
-				return 0;
-
-			return ActionBarHeight();
-		}
-
-		int ActionBarHeight()
-		{
-			int attr = Resource.Attribute.actionBarSize;
-
-			int actionBarHeight;
-			using (var tv = new TypedValue())
-			{
-				actionBarHeight = 0;
-				if (Context.Theme.ResolveAttribute(attr, tv, true))
-					actionBarHeight = TypedValue.ComplexToDimensionPixelSize(tv.Data, Resources.DisplayMetrics);
-			}
-
-			if (actionBarHeight <= 0)
-				return Device.Info.CurrentOrientation.IsPortrait() ? (int)Context.ToPixels(56) : (int)Context.ToPixels(48);
-
-			if (Context.GetActivity().Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus) || Context.GetActivity().Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentNavigation))
-			{
-				if (_toolbar.PaddingTop == 0)
-					_toolbar.SetPadding(0, GetStatusBarHeight(), 0, 0);
-
-				return actionBarHeight + GetStatusBarHeight();
-			}
-
-			return actionBarHeight;
-		}
-
 		void AnimateArrowIn()
 		{
 			var icon = _toolbar.NavigationIcon as DrawerArrowDrawable;
@@ -295,18 +119,6 @@ namespace Microsoft.Maui.Controls.Platform
 			valueAnim.SetDuration(200);
 			valueAnim.Update += (s, a) => icon.Progress = (float)a.Animation.AnimatedValue;
 			valueAnim.Start();
-		}
-
-		int GetStatusBarHeight()
-		{
-			if (_statusbarHeight > 0)
-				return _statusbarHeight;
-
-			int resourceId = Resources.GetIdentifier("status_bar_height", "dimen", "android");
-			if (resourceId > 0)
-				_statusbarHeight = Resources.GetDimensionPixelSize(resourceId);
-
-			return _statusbarHeight;
 		}
 
 		void AnimateArrowOut()
@@ -325,49 +137,6 @@ namespace Microsoft.Maui.Controls.Platform
 		{
 			Element?.PopAsync();
 		}
-
-		void CurrentOnPropertyChanged(object sender, PropertyChangedEventArgs e)
-		{
-			if (e.PropertyName == NavigationPage.HasNavigationBarProperty.PropertyName)
-				ToolbarVisible = NavigationPage.GetHasNavigationBar(Current);
-			else if (e.PropertyName == Page.TitleProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == NavigationPage.HasBackButtonProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == NavigationPage.TitleIconImageSourceProperty.PropertyName ||
-					 e.PropertyName == NavigationPage.TitleViewProperty.PropertyName)
-				UpdateToolbar();
-			else if (e.PropertyName == NavigationPage.IconColorProperty.PropertyName)
-				UpdateToolbar();
-		}
-
-		//TaskCompletionSource<bool> _taskCompletionSource;
-		//public override void Push(MauiNavigationRequestedEventArgs e)
-		//{
-		//	UpdateToolbar();
-
-		//	if (e.Animated && _drawerToggle != null && NavigationPageController.StackDepth == 2 && NavigationPage.GetHasBackButton((Page)e.Page))
-		//		AnimateArrowIn();
-
-
-		//	_taskCompletionSource = new TaskCompletionSource<bool>();
-		//	base.Push(e);
-		//}
-
-		//public override void Pop(object arg3)
-		//{
-		//	if (_drawerToggle != null && NavigationPageController.StackDepth == 2 && NavigationPage.GetHasBackButton(_current))
-		//		AnimateArrowOut();
-
-		//	_taskCompletionSource = new TaskCompletionSource<bool>();
-		//	base.Pop(arg3);
-		//}
-
-
-		//internal override void OnPageFragmentDestroyed(FragmentManager fm, NavHostPageFragment navHostPageFragment)
-		//{
-		//	_taskCompletionSource = null;
-		//}
 
 		private protected override void OnPageFragmentDestroyed(FragmentManager fm, NavHostPageFragment navHostPageFragment)
 		{
@@ -451,78 +220,6 @@ namespace Microsoft.Maui.Controls.Platform
 			_drawerListener = new DrawerMultiplexedListener { Listeners = { _drawerToggle, (DrawerLayout.IDrawerListener)_drawerLayout } };
 			_drawerLayout.AddDrawerListener(_drawerListener);
 		}
-
-		//		void RemovePage(Page page)
-		//		{
-		//			if (!_isAttachedToWindow)
-		//				PushCurrentPages();
-
-		//			Fragment fragment = GetPageFragment(page);
-
-		//			if (fragment == null)
-		//			{
-		//				return;
-		//			}
-
-		//#if DEBUG
-		//			// Enables logging of moveToState operations to logcat
-		//#pragma warning disable CS0618 // Type or member is obsolete
-		//			FragmentManager.EnableDebugLogging(true);
-		//#pragma warning restore CS0618 // Type or member is obsolete
-		//#endif
-
-		//			// Go ahead and take care of the fragment bookkeeping for the page being removed
-		//			FragmentTransaction transaction = FragmentManager.BeginTransactionEx();
-		//			transaction.RemoveEx(fragment);
-		//			transaction.CommitAllowingStateLossEx();
-
-		//			// And remove the fragment from our own stack
-		//			_fragmentStack.Remove(fragment);
-
-		//			Device.StartTimer(TimeSpan.FromMilliseconds(10), () =>
-		//			{
-		//				UpdateToolbar();
-		//				return false;
-		//			});
-		//		}
-
-		//void ResetToolbar()
-		//{
-		//	AToolbar oldToolbar = _toolbar;
-
-		//	_toolbar.SetNavigationOnClickListener(null);
-		//	_toolbar.RemoveFromParent();
-
-		//	_toolbar.RemoveView(_titleView);
-		//	_titleView = null;
-
-		//	if (_titleViewHandler != null)
-		//	{
-		//		_titleViewHandler.VirtualView.Handler = null;
-		//		_titleViewHandler = null;
-		//	}
-
-		//	_toolbar.RemoveView(_titleIconView);
-		//	_titleIconView = null;
-
-		//	_imageSource = null;
-
-		//	_toolbar = null;
-
-		//	SetupToolbar();
-
-		//	// if the old toolbar had padding from transluscentflags, set it to the new toolbar
-		//	if (oldToolbar.PaddingTop != 0)
-		//		_toolbar.SetPadding(0, oldToolbar.PaddingTop, 0, 0);
-
-		//	RegisterToolbar();
-		//	UpdateToolbar();
-		//	UpdateMenu();
-
-		//	// Preserve old values that can't be replicated by calling methods above
-		//	if (_toolbar != null)
-		//		_toolbar.Subtitle = oldToolbar.Subtitle;
-		//}
 
 		//		Task<bool> SwitchContentAsync(Page page, bool animated, bool removed = false, bool popToRoot = false)
 		//		{
@@ -725,7 +422,7 @@ namespace Microsoft.Maui.Controls.Platform
 			if (textColor != null)
 				bar.SetTitleTextColor(textColor.ToNative().ToArgb());
 
-			Color navIconColor = NavigationPage.GetIconColor(Current);
+			Color navIconColor = NavigationPage.GetIconColor(Element.CurrentPage);
 			if (navIconColor != null && bar.NavigationIcon != null)
 				DrawableExtensions.SetColorFilter(bar.NavigationIcon, navIconColor, FilterMode.SrcAtop);
 
