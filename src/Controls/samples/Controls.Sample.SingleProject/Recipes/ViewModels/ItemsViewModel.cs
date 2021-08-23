@@ -12,7 +12,9 @@ namespace Recipes.ViewModels
     {
         public Item _selectedItem;
 
-        public ObservableCollection<Item> Items { get; }
+		public MyRecipesAdapter Adapter { get; private set; }
+
+		public ObservableCollection<Item> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command NewItemCommand { get; }
         public Command<Item> ItemTapped { get; }
@@ -25,7 +27,8 @@ namespace Recipes.ViewModels
 
             ItemTapped = new Command<Item>(OnItemSelected);
             NewItemCommand = new Command(OnNewItem);
-        }
+			Adapter = new MyRecipesAdapter(this);
+		}
 
         async Task ExecuteLoadItemsCommand()
         {

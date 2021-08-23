@@ -11,10 +11,16 @@ namespace Recipes
 	public class RecipesDataAdapter : IVirtualListViewAdapter
 	{
 		private RecipeSearchViewModel _recipeSearchViewModel;
+		private ItemsViewModel _itemsViewModel;
 
 		public RecipesDataAdapter(RecipeSearchViewModel recipeSearchViewModel)
 		{
 			_recipeSearchViewModel = recipeSearchViewModel;
+		}
+
+		public RecipesDataAdapter(ItemsViewModel itemsViewModel)
+		{
+			_itemsViewModel = itemsViewModel;
 		}
 
 		public int Sections => _recipeSearchViewModel.RecipeData == null ? 0 : 1;

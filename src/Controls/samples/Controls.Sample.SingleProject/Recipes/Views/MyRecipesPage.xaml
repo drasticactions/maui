@@ -3,15 +3,38 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Recipes.Views.MyRecipesPage"
              Title="{Binding Title}"
-             xmlns:local="clr-namespace:Recipes.ViewModels"
-             xmlns:model="clr-namespace:Recipes.Models"
-             xmlns:local1="clr-namespace:Recipes">
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:vm="clr-namespace:Recipes.ViewModels"
+             xmlns:vlv="clr-namespace:Microsoft.Maui.Controls"
+             xmlns:local="clr-namespace:Recipes">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="New" Command="{Binding NewItemCommand}" />
     </ContentPage.ToolbarItems>
     <StackLayout Margin="20" >
         <Label Text="Your recipes" FontSize="30" FontAttributes="Bold" TextColor="Black"/>
-        <CarouselView ItemsSource="{Binding Items}" Loop="False">
+        <vlv:VirtualListView
+            x:Name="vMyRecipesListView"
+            HeightRequest="650"
+			HorizontalOptions="FillAndExpand"
+			VerticalOptions="FillAndExpand"
+			Adapter="{Binding Adapter}"
+			SelectionMode="None">
+            <vlv:VirtualListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid RowDefinitions="*, Auto" HeightRequest="250" SemanticProperties.Description="{Binding Item.RecipeName}">
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="MyRecipesPage_Tapped" NumberOfTapsRequired="1"  />
+                        </Grid.GestureRecognizers>
+
+                        <Image Source="{Binding ImageUrl}" HeightRequest="200" VerticalOptions="FillAndExpand" Aspect="AspectFill"/>
+                        <Label Grid.Row="1"  x:Name="recipeName" Padding="10" Text="{Binding RecipeName}" LineBreakMode="WordWrap" MaxLines="3" Style="{DynamicResource ListItemTextStyle}" FontSize="16" VerticalTextAlignment="Center" TextColor="Black" FontAttributes="Bold" BackgroundColor="White" />
+
+                    </Grid>
+                </DataTemplate>
+            </vlv:VirtualListView.ItemTemplate>
+        </vlv:VirtualListView>
+        <!--<CarouselView ItemsSource="{Binding Items}" Loop="False">
             <CarouselView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="30" Orientation="Horizontal" />
             </CarouselView.ItemsLayout>
@@ -30,6 +53,6 @@
                     </Frame>
                 </DataTemplate>
             </CarouselView.ItemTemplate>
-        </CarouselView>
+        </CarouselView>-->
     </StackLayout>
 </ContentPage>
