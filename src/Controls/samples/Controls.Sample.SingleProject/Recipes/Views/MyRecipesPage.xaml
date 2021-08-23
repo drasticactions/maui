@@ -10,26 +10,27 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="New" Command="{Binding NewItemCommand}" />
     </ContentPage.ToolbarItems>
-    <StackLayout Margin="20" >
+    <StackLayout Margin="20">
         <Label Text="Your recipes" FontSize="30" FontAttributes="Bold" TextColor="Black"/>
         <vlv:VirtualListView
             x:Name="vMyRecipesListView"
-            HeightRequest="650"
+            WidthRequest="350"
+            HeightRequest="570"
 			HorizontalOptions="FillAndExpand"
 			VerticalOptions="FillAndExpand"
 			Adapter="{Binding Adapter}"
+            Orientation="Horizontal"
 			SelectionMode="None">
             <vlv:VirtualListView.ItemTemplate>
                 <DataTemplate>
-                    <Grid RowDefinitions="*, Auto" HeightRequest="250" SemanticProperties.Description="{Binding Item.RecipeName}">
+                    <Grid RowDefinitions="*, Auto" Margin="20" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" SemanticProperties.Description="{Binding RecipeName}">
 
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="MyRecipesPage_Tapped" NumberOfTapsRequired="1"  />
                         </Grid.GestureRecognizers>
 
-                        <Image Source="{Binding ImageUrl}" HeightRequest="200" VerticalOptions="FillAndExpand" Aspect="AspectFill"/>
-                        <Label Grid.Row="1"  x:Name="recipeName" Padding="10" Text="{Binding RecipeName}" LineBreakMode="WordWrap" MaxLines="3" Style="{DynamicResource ListItemTextStyle}" FontSize="16" VerticalTextAlignment="Center" TextColor="Black" FontAttributes="Bold" BackgroundColor="White" />
-
+                        <Image Source="{Binding ImageUrl}" VerticalOptions="FillAndExpand" WidthRequest="340" Aspect="AspectFill"/>
+                        <Label Grid.Row="1"  x:Name="recipeName" Padding="10" Text="{Binding RecipeName}" LineBreakMode="WordWrap" MaxLines="3" Style="{DynamicResource ListItemTextStyle}" FontSize="24" VerticalTextAlignment="Center" TextColor="Black" FontAttributes="Bold" BackgroundColor="White" />
                     </Grid>
                 </DataTemplate>
             </vlv:VirtualListView.ItemTemplate>
