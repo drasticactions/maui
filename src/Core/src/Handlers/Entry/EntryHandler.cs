@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using System;
+
 namespace Microsoft.Maui.Handlers
 {
 	public partial class EntryHandler
@@ -25,6 +27,12 @@ namespace Microsoft.Maui.Handlers
 			[nameof(IEntry.CursorPosition)] = MapCursorPosition,
 			[nameof(IEntry.SelectionLength)] = MapSelectionLength
 		};
+
+
+		static EntryHandler()
+		{
+			EntryMapper.PrependToMapping(nameof(IEntry.FlowDirection), (h, __) => h.UpdateValue(nameof(IEntry.HorizontalTextAlignment)));
+		}
 
 		public EntryHandler() : base(EntryMapper)
 		{
