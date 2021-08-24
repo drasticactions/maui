@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -8,7 +9,7 @@ using Microsoft.Maui.Graphics;
 namespace Microsoft.Maui.Controls
 {
 	[ContentProperty(nameof(Root))]
-	public class TableView : View, ITableViewController, IElementConfiguration<TableView>
+	public class TableView : View, ITableViewController, IElementConfiguration<TableView>, IVisualTreeElement
 	{
 		public static readonly BindableProperty RowHeightProperty = BindableProperty.Create("RowHeight", typeof(int), typeof(TableView), -1);
 
@@ -147,6 +148,8 @@ namespace Microsoft.Maui.Controls
 			if (e.PropertyName == TableSectionBase.TitleProperty.PropertyName)
 				OnModelChanged();
 		}
+
+		IReadOnlyList<Maui.IVisualTreeElement> IVisualTreeElement.GetVisualChildren() => new List<Maui.IVisualTreeElement>() { this.Root } ;
 
 		internal class TableSectionModel : TableModel
 		{

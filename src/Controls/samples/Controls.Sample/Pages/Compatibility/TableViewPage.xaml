@@ -5,34 +5,30 @@
     xmlns:views="clr-namespace:Maui.Controls.Sample.Pages.Base"
     Title="TableView">
     <views:BasePage.Content>
-        <VerticalStackLayout
-            Margin="12">
-            <Label
-                Text="Default"
-                Style="{StaticResource Headline}"/>
-            <TableView 
+        <TableView 
+                VerticalOptions="FillAndExpand"
+                HeightRequest="500"
                 Intent="Form">
-                <TableRoot 
+            <TableRoot 
                     Title="TableView Title">
-                    <TableSection
-                        Title="Table Section">
-                        <TextCell 
-                            Text="Text Cell"    
+                <TableSection
+                        Title="Update!">
+                    <TextCell 
+                            Text="Fun Cell"    
                             Detail="With Detail Text" />
-                        <ImageCell 
+                    <ImageCell 
                             ImageSource="dotnet_bot.png"
                             Text = "Image Cell"
                             Detail = "With Detail Text" />
-                        <SwitchCell Text="Switch Cell" />
-                        <EntryCell 
+                    <SwitchCell Text="Switch Cell" />
+                    <EntryCell 
                             Label="Entry Cell" 
                             Placeholder = "Type text here" />
-                        <ViewCell>
-                            <Label Text="A View Cell can be anything you want!" />
-                        </ViewCell>
-                    </TableSection>
-                </TableRoot>
-            </TableView>
-        </VerticalStackLayout>
+                    <ViewCell>
+                        <Label Text="A View Cell can be anything you want!" />
+                    </ViewCell>
+                </TableSection>
+            </TableRoot>
+        </TableView>
     </views:BasePage.Content>
 </views:BasePage>

@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using Microsoft.Maui.Controls.Internals;
+using Microsoft.Maui.Controls.Xaml.Diagnostics;
 
 namespace Microsoft.Maui.Controls
 {
-	public abstract class TableSectionBase<T> : TableSectionBase, IList<T>, INotifyCollectionChanged where T : BindableObject
+	public abstract class TableSectionBase<T> : TableSectionBase, IList<T>, IVisualTreeElement, INotifyCollectionChanged where T : BindableObject
 	{
 		readonly ObservableCollection<T> _children = new ObservableCollection<T>();
 
@@ -123,6 +125,12 @@ namespace Microsoft.Maui.Controls
 				SetInheritedBindingContext(item, bc);
 			}
 		}
+
+		public TableSectionBase<TableSection> Parent { get; set; }
+
+		IReadOnlyList<Maui.IVisualTreeElement> IVisualTreeElement.GetVisualChildren() => this._children.Cast<IVisualTreeElement>().ToList().AsReadOnly();
+
+		IVisualTreeElement IVisualTreeElement.GetVisualParent() => this.Parent;
 	}
 
 	public sealed class TableSection : TableSectionBase<Cell>
