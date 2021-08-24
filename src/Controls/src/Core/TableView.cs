@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Microsoft.Maui.Controls.Internals;
+using Microsoft.Maui.Controls.Xaml.Diagnostics;
 using Microsoft.Maui.Graphics;
 
 namespace Microsoft.Maui.Controls
@@ -63,8 +64,10 @@ namespace Microsoft.Maui.Controls
 				{
 					_tableModel.Root.SectionCollectionChanged -= OnSectionCollectionChanged;
 					_tableModel.Root.PropertyChanged -= OnTableModelRootPropertyChanged;
+					VisualDiagnostics.OnChildRemoved(this, _tableModel.Root, 0);
 				}
 				_tableModel.Root = value ?? new TableRoot();
+				VisualDiagnostics.OnChildAdded(this, _tableModel.Root);
 				SetInheritedBindingContext(_tableModel.Root, BindingContext);
 
 				Root.SelectMany(r => r).ForEach(cell => cell.Parent = this);
