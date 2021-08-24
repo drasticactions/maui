@@ -149,11 +149,9 @@ namespace Microsoft.Maui.Controls
 			}
 		}
 
-		public TableSectionBase<TableSection> Parent { get; set; }
-
 		IReadOnlyList<Maui.IVisualTreeElement> IVisualTreeElement.GetVisualChildren() => this._children.Cast<IVisualTreeElement>().ToList().AsReadOnly();
 
-		IVisualTreeElement IVisualTreeElement.GetVisualParent() => this.Parent;
+		IVisualTreeElement IVisualTreeElement.GetVisualParent() => null;
 	}
 
 	public sealed class TableSection : TableSectionBase<Cell>
