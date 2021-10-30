@@ -1,5 +1,7 @@
 using Android.OS;
 using AndroidX.AppCompat.App;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Platform;
 
 namespace Microsoft.Maui
@@ -29,6 +31,30 @@ namespace Microsoft.Maui
 			base.OnCreate(savedInstanceState);
 
 			this.CreateNativeWindow(MauiApplication.Current.Application, savedInstanceState);
+		}
+
+		void SendPointToAdornerService(float x, float y)
+		{
+			var statusBarHeight = GetStatusBarHeight();
+			int GetStatusBarHeight()
+			{
+				int result = 0;
+				if (Resources == null)
+					return result;
+				int resourceId = Resources.GetIdentifier("status_bar_height", "dimen", "android");
+				if (resourceId > 0)
+				{
+					result = Resources.GetDimensionPixelSize(resourceId);
+				}
+				return result;
+			}
+			var adornerService = MauiApplication.Current.Services.GetService<IAdornerService>();
+			if (adornerService != null)
+			{
+				var point = new Point(this.FromPixels(x), this.FromPixels(y - statusBarHeight));
+				System.Diagnostics.Debug.WriteLine($"touch at point {point.X} {point.Y}");
+				(adornerService as AdornerService)?.ExecuteTouchEventDelegate(point);
+			}
 		}
 	}
 }
