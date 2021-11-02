@@ -10,6 +10,8 @@ namespace Microsoft.Maui
 		/// </summary>
 		IView Content { get; }
 
+		IAdornerLayer AdornerLayer { get; }
+
 		void Created();
 
 		void Resumed();

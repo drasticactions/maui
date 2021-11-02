@@ -58,6 +58,7 @@
     </views:BasePage.ToolbarItems>
     <ScrollView>
         <Grid
+            x:Name="TestGrid"
             RowDefinitions="150, *, Auto"
             RowSpacing="0">
             <!-- HEADER -->

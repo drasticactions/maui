@@ -8,6 +8,8 @@
 
 		public IView Content { get; set; }
 
+		public IAdornerLayer AdornerLayer { get; }
+
 		public string Title { get; set; }
 		public bool IsCreated { get; set; }
 		public bool IsActivated { get; set; }

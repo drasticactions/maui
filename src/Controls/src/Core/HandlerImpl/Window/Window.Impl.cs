@@ -26,6 +26,8 @@ namespace Microsoft.Maui.Controls
 
 		internal Toolbar Toolbar { get; }
 
+		public IAdornerLayer AdornerLayer { get; }
+
 		public Window()
 		{
 			Toolbar = new Toolbar();
@@ -34,6 +36,7 @@ namespace Microsoft.Maui.Controls
 			ModalNavigationManager = new ModalNavigationManager(this);
 			Navigation = new NavigationImpl(this);
 			InternalChildren.CollectionChanged += OnCollectionChanged;
+			AdornerLayer = new AdornerLayer(this);
 		}
 
 		public Window(Page page)

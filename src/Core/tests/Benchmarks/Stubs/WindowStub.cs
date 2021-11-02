@@ -15,6 +15,8 @@ namespace Microsoft.Maui.Handlers.Benchmarks
 		public bool IsResumed { get; set; }
 		public bool IsStopped { get; set; }
 
+		public IAdornerLayer AdornerLayer { get; }
+
 		public void Activated()
 		{
 			IsActivated = true;
