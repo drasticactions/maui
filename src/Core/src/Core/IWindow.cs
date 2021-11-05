@@ -6,9 +6,14 @@ namespace Microsoft.Maui
 	public interface IWindow : ITitledElement
 	{
 		/// <summary>
-		/// Gets or sets the current Page displayed in the Window.
+		/// Gets the current Page displayed in the Window.
 		/// </summary>
 		IView Content { get; }
+
+		/// <summary>
+		/// Gets the adorner layer for the Window.
+		/// </summary>
+		IAdornerLayer AdornerLayer { get; }
 
 		/// <summary>
 		/// Occurs when the Window is created.

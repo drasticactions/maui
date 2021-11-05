@@ -58,7 +58,7 @@
     </views:BasePage.ToolbarItems>
     <ScrollView>
         <Grid
-            RowDefinitions="150, *, Auto"
+            RowDefinitions="200, *, Auto"
             RowSpacing="0">
             <!-- HEADER -->
             <Image

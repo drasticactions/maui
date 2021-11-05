@@ -16,6 +16,8 @@ namespace Microsoft.Maui.Handlers
 			var rootManager = handler.MauiContext.GetNavigationRootManager();
 			rootManager.SetContentView(nativeContent);
 			handler.NativeView.SetContentView(rootManager.RootView);
+			if (window.AdornerLayer != null)
+				window.AdornerLayer.InitializeNativeLayer(handler.MauiContext, rootManager.RootView);
 		}
 	}
 }

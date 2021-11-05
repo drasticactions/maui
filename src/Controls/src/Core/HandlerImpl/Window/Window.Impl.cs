@@ -34,6 +34,7 @@ namespace Microsoft.Maui.Controls
 			ModalNavigationManager = new ModalNavigationManager(this);
 			Navigation = new NavigationImpl(this);
 			InternalChildren.CollectionChanged += OnCollectionChanged;
+			AdornerLayer = new AdornerLayer(this);
 		}
 
 		public Window(Page page)
@@ -67,6 +68,8 @@ namespace Microsoft.Maui.Controls
 		public event EventHandler? Stopped;
 		public event EventHandler? Destroying;
 		public event EventHandler<BackgroundingEventArgs>? Backgrounding;
+
+		public IAdornerLayer AdornerLayer { get; }
 
 		protected virtual void OnCreated() { }
 		protected virtual void OnResumed() { }
