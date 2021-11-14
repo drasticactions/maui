@@ -17,7 +17,7 @@ namespace Microsoft.Maui
 	public static class IViewExtensions
 	{
 #if __ANDROID__
-		internal static Rectangle GetNativeViewBounds(this IView view)
+		public static Rectangle GetNativeViewBounds(this IView view)
 		{
 			var nativeView = view.GetNative(true);
 			if (nativeView == null || nativeView.Context == null)
@@ -34,7 +34,7 @@ namespace Microsoft.Maui
 				nativeView.Context.ToPixels(view.Frame.Height));
 		}
 #elif __IOS__
-		internal static Rectangle GetNativeViewBounds(this IView view)
+		public static Rectangle GetNativeViewBounds(this IView view)
 		{
 			var nativeView = view.GetNative(true);
 			if (nativeView == null)
@@ -61,7 +61,7 @@ namespace Microsoft.Maui
 			return new Rectangle(X, Y, Width, Height);
 		}
 
-		internal static UIKit.UIWindow? GetUIWindow(this UIKit.UIView view)
+		public static UIKit.UIWindow? GetUIWindow(this UIKit.UIView view)
 		{
 			if (view is UIKit.UIWindow window)
 				return window;
@@ -72,7 +72,7 @@ namespace Microsoft.Maui
 			return null;
 		}
 #elif WINDOWS
-		internal static Rectangle GetNativeViewBounds(this IView view)
+		public static Rectangle GetNativeViewBounds(this IView view)
 		{
 			var nativeView = view.GetNative(true);
 			if (nativeView != null)
@@ -86,7 +86,7 @@ namespace Microsoft.Maui
 			return new Rectangle();
 		}
 #else
-		internal static Rectangle GetNativeViewBounds(this IView view) => view.Frame;
+		public static Rectangle GetNativeViewBounds(this IView view) => view.Frame;
 #endif
 	}
 }
