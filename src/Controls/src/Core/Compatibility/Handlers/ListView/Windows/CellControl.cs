@@ -399,7 +399,16 @@ namespace Microsoft.Maui.Controls.Platform.Compatibility
 			// Note: The cleanup (SendDisappearing(), etc.) is done by the Cell propertychanged callback so we do not need to do any cleanup ourselves.
 
 			if (Cell != cell)
+			{
+				if (cell is not null)
+				{
+					lv.RemoveCellFromChildren(cell);
+				}
+
 				Cell = cell;
+
+				lv.AddCellToChildren(cell);
+			}
 
 			// 🚀 Even if the cell did not change, we **must** call SendDisappearing() and SendAppearing()
 			// because frameworks such as Reactive UI rely on this! (this.WhenActivated())

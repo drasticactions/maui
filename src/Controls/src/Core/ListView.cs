@@ -452,19 +452,33 @@ namespace Microsoft.Maui.Controls
 			}
 		}
 
+		internal void AddCellToChildren(Cell content)
+		{
+			if (content != null)
+			{
+				_logicalChildren.Add(content);
+				content.Parent = this;
+				VisualDiagnostics.OnChildAdded(this, content);
+			}
+		}
+
 		protected override void UnhookContent(Cell content)
 		{
 			base.UnhookContent(content);
 
 			if (content == null)
 				return;
+			RemoveCellFromChildren(content);
+		}
+
+		internal void RemoveCellFromChildren(Cell content)
+		{
 			var index = _logicalChildren.IndexOf(content);
 			if (index == -1)
 				return;
 			_logicalChildren.RemoveAt(index);
 			content.Parent = null;
 			VisualDiagnostics.OnChildRemoved(this, content, index);
-
 		}
 
 		/// <include file="../../docs/Microsoft.Maui.Controls/ListView.xml" path="//Member[@MemberName='CreateDefaultCell']/Docs/*" />

@@ -29,6 +29,44 @@ namespace Microsoft.Maui.DeviceTests
 		}
 
 		[Fact]
+		public async Task ListViewChildrenCount()
+		{
+			SetupBuilder();
+			ObservableCollection<string> data = new ObservableCollection<string>()
+			{
+				"cat",
+				"dog",
+				"catdog"
+			};
+
+			var listView = new ListView()
+			{
+				ItemTemplate = new DataTemplate(() =>
+				{
+					return new ViewCell()
+					{
+						View = new VerticalStackLayout()
+						{
+							new Label()
+						}
+					};
+				}),
+				ItemsSource = data
+			};
+
+			var layout = new VerticalStackLayout()
+			{
+				listView
+			};
+
+			await CreateHandlerAndAddToWindow<LayoutHandler>(layout, async (handler) =>
+			{
+				await Task.Delay(100);
+				Assert.True(((IVisualTreeElement)listView).GetVisualChildren().Count > 0);
+			});
+		}
+
+		[Fact]
 		public async Task RemovingFirstItemOfListViewDoesntCrash()
 		{
 			SetupBuilder();
