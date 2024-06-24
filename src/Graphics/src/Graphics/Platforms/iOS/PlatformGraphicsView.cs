@@ -68,6 +68,8 @@ namespace Microsoft.Maui.Graphics.Platform
 			}
 		}
 
+		public override bool IsTransparentFocusItem => true;
+
 		public void InvalidateDrawable() => Renderer?.Invalidate();
 
 		public void InvalidateDrawable(float x, float y, float w, float h) => Renderer?.Invalidate(x, y, w, h);

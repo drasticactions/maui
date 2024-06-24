@@ -806,6 +806,7 @@ override Microsoft.Maui.Graphics.Platform.PlatformCanvas.SubtractFromClip(float 
 override Microsoft.Maui.Graphics.Platform.PlatformGraphicsView.Bounds.get -> CoreGraphics.CGRect
 override Microsoft.Maui.Graphics.Platform.PlatformGraphicsView.Bounds.set -> void
 override Microsoft.Maui.Graphics.Platform.PlatformGraphicsView.Draw(CoreGraphics.CGRect dirtyRect) -> void
+override Microsoft.Maui.Graphics.Platform.PlatformGraphicsView.IsTransparentFocusItem.get -> bool
 override Microsoft.Maui.Graphics.Point.GetHashCode() -> int
 override Microsoft.Maui.Graphics.PointF.GetHashCode() -> int
 override Microsoft.Maui.Graphics.Rect.GetHashCode() -> int
