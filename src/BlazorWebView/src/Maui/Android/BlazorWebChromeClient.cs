@@ -40,6 +40,11 @@ namespace Microsoft.AspNetCore.Components.WebView.Maui
 			return true;
 		}
 
+		public override void OnPermissionRequest(PermissionRequest? request)
+		{
+			request?.Grant(request.GetResources());
+		}
+
 		private static async Task CallFilePickerAsync(IValueCallback filePathCallback, FileChooserParams? fileChooserParams)
 		{
 			var pickOptions = GetPickOptions(fileChooserParams);
