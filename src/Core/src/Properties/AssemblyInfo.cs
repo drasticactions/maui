@@ -41,3 +41,5 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Microsoft.Maui.TestUtils.DeviceTests.Runners")]
 [assembly: InternalsVisibleTo("Microsoft.Maui.TestUtils.DeviceTests")]
 [assembly: InternalsVisibleTo("Microsoft.Maui.DeviceTests.Shared")]
+// Temp name
+[assembly: InternalsVisibleTo("Microsoft.Maui.Drastic")]
