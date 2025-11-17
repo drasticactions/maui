@@ -1,1 +1,4 @@
 #nullable enable
+static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.ContainsLifecycleEvent<TDelegate>(this System.IServiceProvider! services, string? eventName = null) -> bool
+static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.GetLifecycleEventDelegates<TDelegate>(this System.IServiceProvider! services, string? eventName = null) -> System.Collections.Generic.IEnumerable<TDelegate!>!
+static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.InvokeLifecycleEvents<TDelegate>(this System.IServiceProvider! services, System.Action<TDelegate!>! action) -> void
