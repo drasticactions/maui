@@ -123,7 +123,7 @@ namespace Microsoft.Maui.Platform
 		}
 #endif
 
-		internal static bool IsThisMyPlatformView(this IElement? element, PlatformView platformView)
+		public static bool IsThisMyPlatformView(this IElement? element, PlatformView platformView)
 		{
 			if (element is not null &&
 				element.Handler is IPlatformViewHandler pvh)
