@@ -19,7 +19,7 @@ namespace Microsoft.Maui.LifecycleEvents
 				action?.Invoke(del);
 		}
 
-		internal static void InvokeLifecycleEvents<TDelegate>(this IServiceProvider services, Action<TDelegate> action)
+		public static void InvokeLifecycleEvents<TDelegate>(this IServiceProvider services, Action<TDelegate> action)
 			where TDelegate : Delegate
 		{
 			if (services == null)
@@ -31,7 +31,7 @@ namespace Microsoft.Maui.LifecycleEvents
 				action?.Invoke(del);
 		}
 
-		internal static IEnumerable<TDelegate> GetLifecycleEventDelegates<TDelegate>(this IServiceProvider services, string? eventName = null)
+		public static IEnumerable<TDelegate> GetLifecycleEventDelegates<TDelegate>(this IServiceProvider services, string? eventName = null)
 			where TDelegate : Delegate
 		{
 			var lifecycleService = services?.GetService<ILifecycleEventService>();
@@ -45,7 +45,7 @@ namespace Microsoft.Maui.LifecycleEvents
 				yield return del;
 		}
 
-		internal static bool ContainsLifecycleEvent<TDelegate>(this IServiceProvider services, string? eventName = null)
+		public static bool ContainsLifecycleEvent<TDelegate>(this IServiceProvider services, string? eventName = null)
 			where TDelegate : Delegate
 		{
 			var lifecycleService = services?.GetService<ILifecycleEventService>();
