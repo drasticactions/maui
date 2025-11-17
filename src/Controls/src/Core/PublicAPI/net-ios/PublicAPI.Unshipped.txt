@@ -1,1 +1,8 @@
 #nullable enable
+Microsoft.Maui.Controls.IControlsElement
+Microsoft.Maui.Controls.IControlsElement.HandlerChanged -> System.EventHandler?
+Microsoft.Maui.Controls.IControlsElement.HandlerChanging -> System.EventHandler<Microsoft.Maui.Controls.HandlerChangingEventArgs!>?
+Microsoft.Maui.Controls.IControlsVisualElement
+Microsoft.Maui.Controls.IControlsVisualElement.PlatformContainerViewChanged -> System.EventHandler?
+Microsoft.Maui.Controls.IControlsVisualElement.Window.get -> Microsoft.Maui.Controls.Window?
+Microsoft.Maui.Controls.IControlsVisualElement.WindowChanged -> System.EventHandler?
