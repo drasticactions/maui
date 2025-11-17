@@ -6,4 +6,5 @@ Microsoft.Maui.Controls.IControlsVisualElement
 Microsoft.Maui.Controls.IControlsVisualElement.PlatformContainerViewChanged -> System.EventHandler?
 Microsoft.Maui.Controls.IControlsVisualElement.Window.get -> Microsoft.Maui.Controls.Window?
 Microsoft.Maui.Controls.IControlsVisualElement.WindowChanged -> System.EventHandler?
+Microsoft.Maui.Controls.TapGestureRecognizer.SendTapped(Microsoft.Maui.Controls.View! sender, System.Func<Microsoft.Maui.IElement?, Microsoft.Maui.Graphics.Point?>? getPosition = null) -> void
 static Microsoft.Maui.Controls.ViewExtensions.GetCompositeGestureRecognizers(this Microsoft.Maui.Controls.Element! element) -> System.Collections.Generic.IList<Microsoft.Maui.Controls.IGestureRecognizer!>?
