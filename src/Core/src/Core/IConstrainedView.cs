@@ -1,6 +1,6 @@
 namespace Microsoft.Maui;
 
-internal interface IConstrainedView
+public interface IConstrainedView
 {
 	bool HasFixedConstraints { get; }
 }

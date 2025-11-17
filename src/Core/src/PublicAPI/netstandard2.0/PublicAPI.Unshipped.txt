@@ -1,4 +1,8 @@
 #nullable enable
+Microsoft.Maui.IConstrainedView
+Microsoft.Maui.IConstrainedView.HasFixedConstraints.get -> bool
+Microsoft.Maui.IVisualTreeElementProvidable
+Microsoft.Maui.IVisualTreeElementProvidable.GetElement() -> Microsoft.Maui.IVisualTreeElement?
 static Microsoft.Maui.LifecycleEvents.LifecycleBuilderExtensions.OnEvent<TLifecycleBuilder, TDelegate>(this TLifecycleBuilder builder, TDelegate! action, string? eventName = null) -> TLifecycleBuilder
 static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.ContainsLifecycleEvent<TDelegate>(this System.IServiceProvider! services, string? eventName = null) -> bool
 static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.GetLifecycleEventDelegates<TDelegate>(this System.IServiceProvider! services, string? eventName = null) -> System.Collections.Generic.IEnumerable<TDelegate!>!
