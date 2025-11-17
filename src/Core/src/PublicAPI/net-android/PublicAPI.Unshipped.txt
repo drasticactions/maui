@@ -6,3 +6,4 @@ static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.ContainsLi
 static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.GetLifecycleEventDelegates<TDelegate>(this System.IServiceProvider! services, string? eventName = null) -> System.Collections.Generic.IEnumerable<TDelegate!>!
 static Microsoft.Maui.LifecycleEvents.LifecycleEventServiceExtensions.InvokeLifecycleEvents<TDelegate>(this System.IServiceProvider! services, System.Action<TDelegate!>! action) -> void
 static Microsoft.Maui.Platform.ViewExtensions.IsThisMyPlatformView(this Microsoft.Maui.IElement? element, object! platformView) -> bool
+static Microsoft.Maui.VisualTreeElementExtensions.IsThisMyPlatformView(this Microsoft.Maui.IVisualTreeElement? visualTreeElement, object! platformView) -> bool

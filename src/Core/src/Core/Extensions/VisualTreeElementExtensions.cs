@@ -298,7 +298,7 @@ namespace Microsoft.Maui
 			}
 		}
 
-		internal static bool IsThisMyPlatformView(this IVisualTreeElement? visualTreeElement, PlatformView platformView)
+		public static bool IsThisMyPlatformView(this IVisualTreeElement? visualTreeElement, PlatformView platformView)
 		{
 			if (visualTreeElement is IElement element)
 				return element.IsThisMyPlatformView(platformView);
