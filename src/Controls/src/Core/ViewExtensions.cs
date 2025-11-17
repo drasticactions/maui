@@ -453,7 +453,7 @@ namespace Microsoft.Maui.Controls
 			return default;
 		}
 
-		internal static IList<IGestureRecognizer>? GetCompositeGestureRecognizers(this Element element)
+		public static IList<IGestureRecognizer>? GetCompositeGestureRecognizers(this Element element)
 		{
 			if (element is IGestureController gc)
 				return gc.CompositeGestureRecognizers;
