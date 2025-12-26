@@ -35,12 +35,6 @@ namespace Microsoft.Maui.Controls.Platform
 				return;
 			}
 
-			_subscription =
-				// try use services
-				context.Services.GetService<IAlertManagerSubscription>() ??
-				// fall back to the platform implementation and a "null implementation" on non-platforms
-				CreateSubscription(context);
-
 			if (_subscription is null)
 			{
 				context.CreateLogger<AlertManager>()?.LogWarning("Warning - Unable to create alert manager subscription.");

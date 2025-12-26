@@ -28,18 +28,19 @@ namespace Microsoft.Maui.Controls.Platform
 			view.HandlerChanged += OnHandlerChanged;
 			view.WindowChanged += OnWindowChanged;
 			view.PlatformContainerViewChanged += OnPlatformContainerViewChanged;
-
-			SetupGestureManager();
 		}
 
-		void OnPlatformContainerViewChanged(object? sender, EventArgs e) =>
-			SetupGestureManager();
+		void OnPlatformContainerViewChanged(object? sender, EventArgs e)
+		{
+		}
 
-		void OnWindowChanged(object? sender, EventArgs e) =>
-			SetupGestureManager();
+		void OnWindowChanged(object? sender, EventArgs e)
+		{
+		}
 
-		void OnHandlerChanged(object? sender, EventArgs e) =>
-			SetupGestureManager();
+		void OnHandlerChanged(object? sender, EventArgs e)
+		{
+		}
 
 		void OnHandlerChanging(object? sender, HandlerChangingEventArgs e) =>
 			DisconnectGestures();
